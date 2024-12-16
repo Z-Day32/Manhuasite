@@ -42,6 +42,7 @@
             width: calc(25% - 20px);
             display: inline-block;
             vertical-align: top;
+            text-align: center;
         }
         .manhwa-card img {
             width: 100%;
@@ -50,6 +51,15 @@
         .manhwa-card h3 {
             font-size: 1.1em;
             margin: 10px;
+        }
+        button {
+            margin: 10px;
+            padding: 10px 20px;
+            border: none;
+            background-color: #222;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
         }
         .ad-banner {
             text-align: center;
@@ -64,6 +74,13 @@
             color: white;
             padding: 10px 0;
             margin-top: 20px;
+        }
+        #story-output {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -84,25 +101,12 @@
 
         <h2>Featured Manhwa</h2>
         <div class="manhwa-card">
-            <img src="https://via.placeholder.com/150" alt="Manhwa Cover">
-            <h3>Title: Example Manhwa</h3>
-            <p>Genre: Action, Adventure</p>
+            <h3 id="story-title">Generated Story Title</h3>
+            <p id="story-summary">Click the button to generate a new story.</p>
+            <button onclick="generateStory()">Generate Story</button>
         </div>
-        <div class="manhwa-card">
-            <img src="https://via.placeholder.com/150" alt="Manhwa Cover">
-            <h3>Title: Another Manhwa</h3>
-            <p>Genre: Romance, Comedy</p>
-        </div>
-        <div class="manhwa-card">
-            <img src="https://via.placeholder.com/150" alt="Manhwa Cover">
-            <h3>Title: Cool Manhwa</h3>
-            <p>Genre: Fantasy, Drama</p>
-        </div>
-        <div class="manhwa-card">
-            <img src="https://via.placeholder.com/150" alt="Manhwa Cover">
-            <h3>Title: Mystery Manhwa</h3>
-            <p>Genre: Mystery, Thriller</p>
-        </div>
+
+        <div id="story-output"></div>
 
         <div class="ad-banner">
             Placeholder for Advertisement (300x250)
@@ -111,5 +115,17 @@
     <footer>
         <p>&copy; 2024 Manhwa Reader | All Rights Reserved</p>
     </footer>
+
+    <script>
+        function generateStory() {
+            fetch('http://127.0.0.1:5000/generate_story')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('story-title').innerText = data.title;
+                    document.getElementById('story-summary').innerText = data.story;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
 </body>
 </html>
