@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manhwa Reader</title>
+    <title>Read Story</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -17,213 +17,61 @@
             padding: 10px 20px;
             text-align: center;
         }
-        nav {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin: 10px 0;
-        }
-        nav a {
-            text-decoration: none;
-            color: #222;
-            font-weight: bold;
-        }
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 20px auto;
-            padding: 10px;
-        }
-        .manhwa-card {
+            padding: 20px;
+            background: white;
             border: 1px solid #ddd;
             border-radius: 5px;
-            overflow: hidden;
-            background: white;
-            margin: 10px;
-            width: calc(25% - 20px);
-            display: inline-block;
-            vertical-align: top;
-            text-align: center;
         }
-        .manhwa-card img {
-            width: 100%;
-            height: auto;
-        }
-        .manhwa-card h3 {
-            font-size: 1.1em;
-            margin: 10px;
-        }
-        button {
-            margin: 10px;
-            padding: 10px 20px;
-            border: none;
-            background-color: #222;
-            color: white;
-            cursor: pointer;
+        img {
+            max-width: 100%;
             border-radius: 5px;
+            margin-bottom: 20px;
         }
-        .ad-banner {
+        h1 {
+            margin: 10px 0;
             text-align: center;
-            margin: 20px 0;
-            background: #ddd;
-            padding: 10px;
-            border: 1px dashed #aaa;
         }
-        footer {
+        p {
+            line-height: 1.6;
+            text-align: justify;
+        }
+        a {
+            display: block;
             text-align: center;
-            background-color: #222;
+            margin: 20px auto;
             color: white;
-            padding: 10px 0;
-            margin-top: 20px;
-        }
-        .section-title {
-            text-align: center;
-            margin: 20px 0;
-            font-size: 1.5em;
-        }
-        .hidden {
-            display: none;
+            text-decoration: none;
+            background-color: #222;
+            padding: 10px 20px;
+            border-radius: 5px;
+            width: fit-content;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Welcome to Manhwa Reader</h1>
+        <h1 id="story-title">Story Title</h1>
     </header>
-    <nav>
-        <a href="#home" onclick="showSection('home')">Home</a>
-        <a href="#genres" onclick="showSection('genres')">Genres</a>
-        <a href="#latest" onclick="showSection('latest')">Latest</a>
-        <a href="#contact" onclick="showSection('contact')">Contact</a>
-    </nav>
-
-    <div id="home" class="container">
-        <div class="ad-banner">
-            Placeholder for Advertisement (728x90)
-        </div>
-        <h2 class="section-title">Featured Manhwa</h2>
-        <div id="featured-stories"></div>
-        <div class="ad-banner">
-            Placeholder for Advertisement (300x250)
-        </div>
+    <div class="container">
+        <img id="story-cover" src="" alt="Story Cover">
+        <p id="story-content">Story content will appear here...</p>
+        <a href="index.html">Back to Home</a>
     </div>
-
-    <div id="genres" class="container hidden">
-        <h2 class="section-title">Browse by Genres</h2>
-        <div id="genre-stories"></div>
-    </div>
-
-    <div id="latest" class="container hidden">
-        <h2 class="section-title">Latest Stories</h2>
-        <div id="latest-stories"></div>
-    </div>
-
-    <div id="contact" class="container hidden">
-        <h2 class="section-title">Contact Us</h2>
-        <form id="contact-form">
-            <input type="text" placeholder="Your Name" required>
-            <input type="email" placeholder="Your Email" required>
-            <textarea placeholder="Your Message" rows="5" required></textarea>
-            <button type="submit">Send Message</button>
-        </form>
-    </div>
-
-    <footer>
-        <p>&copy; 2024 Manhwa Reader | All Rights Reserved</p>
-    </footer>
 
     <script>
-        const stories = [
-            {
-                title: "The Lone Swordmaster",
-                summary: "In a forgotten realm, a lone swordmaster challenges the heavens to reclaim his honor.",
-                cover: "https://raw.githubusercontent.com/Z-Day32/Readenglish/main/images/DALL%C2%B7E%202024-12-16%2014.22.43%20-%20A%20dramatic%20fantasy%20cover%20art%20for%20a%20story%20titled%20'The%20Lone%20Swordmaster'.%20The%20image%20features%20a%20lone%20warrior%20with%20a%20long%20sword%20standing%20on%20a%20mountain%20pea.webp",
-                genre: "Action",
-                content: "Long ago, a lone swordmaster set out to challenge the heavens to reclaim his honor and destiny."
-            },
-            {
-                title: "Rebirth of the Mage",
-                summary: "After falling to betrayal, the greatest mage is reborn with unmatched power to seek revenge.",
-                cover: "https://via.placeholder.com/300x400?text=Rebirth+of+the+Mage",
-                genre: "Fantasy",
-                content: "Betrayed and left for dead, the greatest mage awakens in a new body to reshape his fate."
-            },
-            {
-                title: "Demon King's Apprentice",
-                summary: "A young hero is forced to become the apprentice of the Demon King, questioning good and evil.",
-                cover: "https://via.placeholder.com/300x400?text=Demon+King's+Apprentice",
-                genre: "Drama",
-                content: "Chosen as the hero, a young boy questions good and evil after learning from the Demon King."
-            },
-            {
-                title: "Tower of Infinity",
-                summary: "Climbing an endless tower, a boy faces trials that will shape him into a legend.",
-                cover: "https://via.placeholder.com/300x400?text=Tower+of+Infinity",
-                genre: "Adventure",
-                content: "An endless tower offers glory, testing those brave enough to climb its heights."
-            }
-        ];
+        // Get parameters from the URL
+        const params = new URLSearchParams(window.location.search);
+        const title = params.get("title");
+        const cover = params.get("cover");
+        const content = params.get("content");
 
-        function loadStories() {
-            const homeContainer = document.getElementById("featured-stories");
-            const genreContainer = document.getElementById("genre-stories");
-            const latestContainer = document.getElementById("latest-stories");
-            homeContainer.innerHTML = "";
-            genreContainer.innerHTML = "";
-            latestContainer.innerHTML = "";
-
-            // Home (Featured Stories)
-            stories.forEach((story, index) => {
-                addStoryCard(homeContainer, story, index);
-            });
-
-            // Genres
-            const genres = {};
-            stories.forEach((story, index) => {
-                if (!genres[story.genre]) genres[story.genre] = [];
-                genres[story.genre].push({ story, index });
-            });
-
-            Object.keys(genres).forEach(genre => {
-                const genreTitle = document.createElement("h3");
-                genreTitle.innerText = genre;
-                genreContainer.appendChild(genreTitle);
-                genres[genre].forEach(({ story, index }) => {
-                    addStoryCard(genreContainer, story, index);
-                });
-            });
-
-            // Latest
-            stories.slice().reverse().forEach((story, index) => {
-                addStoryCard(latestContainer, story, index);
-            });
-        }
-
-        function addStoryCard(container, story, index) {
-            const card = document.createElement("div");
-            card.className = "manhwa-card";
-            card.innerHTML = `
-                <img src="${story.cover}" alt="${story.title}">
-                <h3>${story.title}</h3>
-                <p>${story.summary}</p>
-                <button onclick="readStory(${index})">Read More</button>
-            `;
-            container.appendChild(card);
-        }
-
-        function readStory(index) {
-            const story = stories[index];
-            const url = `story.html?title=${encodeURIComponent(story.title)}&cover=${encodeURIComponent(story.cover)}&content=${encodeURIComponent(story.content)}`;
-            window.location.href = url;
-        }
-
-        function showSection(sectionId) {
-            document.querySelectorAll('.container').forEach(section => {
-                section.classList.add('hidden');
-            });
-            document.getElementById(sectionId).classList.remove('hidden');
-        }
-
-        window.onload = loadStories;
+        // Update page with story details
+        document.getElementById("story-title").innerText = title || "Story Title";
+        document.getElementById("story-cover").src = cover || "";
+        document.getElementById("story-content").innerText = content || "No story content available.";
     </script>
 </body>
 </html>
