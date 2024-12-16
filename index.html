@@ -133,34 +133,35 @@
     </footer>
 
     <script>
+        const storyBaseUrl = "https://raw.githubusercontent.com/Z-Day32/Readenglish/main/stories/";
         const stories = [
             {
                 title: "The Lone Swordmaster",
                 summary: "In a forgotten realm, a lone swordmaster challenges the heavens to reclaim his honor.",
                 cover: "https://raw.githubusercontent.com/Z-Day32/Readenglish/main/images/DALLE20241216LoneSwordmaster.webp",
                 genre: "Action",
-                content: "Long ago, a lone swordmaster set out to challenge the heavens to reclaim his honor and destiny."
+                file: "lone_swordmaster.txt"
             },
             {
                 title: "Rebirth of the Mage",
                 summary: "After falling to betrayal, the greatest mage is reborn with unmatched power to seek revenge.",
-                cover: "https://via.placeholder.com/300x400?text=RebirthMage",
+                cover: "https://via.placeholder.com/300x400?text=Rebirth+of+the+Mage",
                 genre: "Fantasy",
-                content: "Betrayed and left for dead, the greatest mage awakens in a new body to reshape his fate."
+                file: "rebirth_of_the_mage.txt"
             },
             {
                 title: "Demon King's Apprentice",
                 summary: "A young hero is forced to become the apprentice of the Demon King, questioning good and evil.",
                 cover: "https://via.placeholder.com/300x400?text=Demon+King's+Apprentice",
                 genre: "Drama",
-                content: "Chosen as the hero, a young boy questions good and evil after learning from the Demon King."
+                file: "demon_kings_apprentice.txt"
             },
             {
                 title: "Tower of Infinity",
                 summary: "Climbing an endless tower, a boy faces trials that will shape him into a legend.",
                 cover: "https://via.placeholder.com/300x400?text=Tower+of+Infinity",
                 genre: "Adventure",
-                content: "An endless tower offers glory, testing those brave enough to climb its heights."
+                file: "tower_of_infinity.txt"
             }
         ];
 
@@ -214,7 +215,7 @@
         function readStory(index) {
             if (stories[index]) {
                 const story = stories[index];
-                const url = `story.html?title=${encodeURIComponent(story.title)}&cover=${encodeURIComponent(story.cover)}&content=${encodeURIComponent(story.content)}`;
+                const url = `story.html?title=${encodeURIComponent(story.title)}&cover=${encodeURIComponent(story.cover)}&file=${encodeURIComponent(story.file)}`;
                 window.location.href = url;
             } else {
                 console.error("Story not found.");
