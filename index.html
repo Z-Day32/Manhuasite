@@ -75,12 +75,31 @@
             padding: 10px 0;
             margin-top: 20px;
         }
-        #story-output {
-            margin-top: 20px;
-            padding: 15px;
-            background: #fff;
+        .section-title {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.5em;
+        }
+        #contact-form {
+            background: white;
+            padding: 20px;
+            margin: 20px auto;
             border: 1px solid #ddd;
             border-radius: 5px;
+            max-width: 500px;
+        }
+        #contact-form input, #contact-form textarea, #contact-form button {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        #contact-form button {
+            background-color: #222;
+            color: white;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -89,33 +108,49 @@
         <h1>Welcome to Manhwa Reader</h1>
     </header>
     <nav>
-        <a href="#">Home</a>
-        <a href="#">Genres</a>
-        <a href="#">Latest</a>
-        <a href="#">Contact</a>
+        <a href="#home">Home</a>
+        <a href="#genres">Genres</a>
+        <a href="#latest">Latest</a>
+        <a href="#contact">Contact</a>
     </nav>
-    <div class="container">
+
+    <div id="home" class="container">
         <div class="ad-banner">
             Placeholder for Advertisement (728x90)
         </div>
-
-        <h2>Featured Manhwa</h2>
-        <div class="manhwa-card">
-            <img id="story-cover" src="https://via.placeholder.com/300x400?text=Generated+Story" alt="Story Cover">
-            <h3 id="story-title">Generated Story Title</h3>
-            <p id="story-summary">Click the button to generate a new story.</p>
-            <button onclick="generateStory()">Generate Story</button>
-        </div>
-
+        <h2 class="section-title">Featured Manhwa</h2>
+        <div id="featured-stories"></div>
         <div class="ad-banner">
             Placeholder for Advertisement (300x250)
         </div>
     </div>
+
+    <div id="genres" class="container">
+        <h2 class="section-title">Browse by Genres</h2>
+        <p>Genres coming soon...</p>
+    </div>
+
+    <div id="latest" class="container">
+        <h2 class="section-title">Latest Stories</h2>
+        <p>Latest uploads will appear here...</p>
+    </div>
+
+    <div id="contact" class="container">
+        <h2 class="section-title">Contact Us</h2>
+        <form id="contact-form">
+            <input type="text" placeholder="Your Name" required>
+            <input type="email" placeholder="Your Email" required>
+            <textarea placeholder="Your Message" rows="5" required></textarea>
+            <button type="submit">Send Message</button>
+        </form>
+    </div>
+
     <footer>
         <p>&copy; 2024 Manhwa Reader | All Rights Reserved</p>
     </footer>
 
     <script>
+        // Load stories dynamically from JSON
         const stories = [
             {
                 title: "The Lone Swordmaster",
@@ -139,16 +174,25 @@
             }
         ];
 
-        let currentIndex = 0;
+        function loadStories() {
+            const container = document.getElementById("featured-stories");
+            container.innerHTML = "";
 
-        function generateStory() {
-            const story = stories[currentIndex];
-            document.getElementById('story-title').innerText = story.title;
-            document.getElementById('story-summary').innerText = story.summary;
-            document.getElementById('story-cover').src = story.cover;
-
-            currentIndex = (currentIndex + 1) % stories.length; // Cycle through stories
+            stories.forEach(story => {
+                const card = document.createElement("div");
+                card.className = "manhwa-card";
+                card.innerHTML = `
+                    <img src="${story.cover}" alt="${story.title}">
+                    <h3>${story.title}</h3>
+                    <p>${story.summary}</p>
+                    <button onclick="alert('Read More: ${story.title}')">Read More</button>
+                `;
+                container.appendChild(card);
+            });
         }
+
+        // Load stories on page load
+        window.onload = loadStories;
     </script>
 </body>
 </html>
