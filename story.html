@@ -87,7 +87,7 @@
                     contentElement.innerText = text;
                 })
                 .catch(error => {
-                    contentElement.innerText = "Unable to load story content.";
+                    contentElement.innerText = "Unable to load story content. Please verify the file exists.";
                     console.error(error);
                 });
         } else {
