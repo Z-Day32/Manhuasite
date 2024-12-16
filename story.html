@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manhwa Story</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: #222;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        img {
+            max-width: 100%;
+            border-radius: 5px;
+        }
+        h1 {
+            margin: 10px 0;
+        }
+        p {
+            line-height: 1.6;
+        }
+        footer {
+            text-align: center;
+            background-color: #222;
+            color: white;
+            padding: 10px 0;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 id="story-title">Story Title</h1>
+    </header>
+    <div class="container">
+        <img id="story-cover" src="" alt="Story Cover">
+        <p id="story-content">Full story content will appear here...</p>
+    </div>
+    <footer>
+        <p>&copy; 2024 Manhwa Reader | All Rights Reserved</p>
+    </footer>
+
+    <script>
+        // Load story data from URL parameters
+        const params = new URLSearchParams(window.location.search);
+        const title = params.get('title');
+        const cover = params.get('cover');
+        const content = params.get('content');
+
+        // Populate the page with story details
+        document.getElementById("story-title").innerText = title || "Story Title";
+        document.getElementById("story-cover").src = cover || "";
+        document.getElementById("story-content").innerText = content || "No content available.";
+    </script>
+</body>
+</html>
