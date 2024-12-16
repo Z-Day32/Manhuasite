@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manhwa Story</title>
+    <title>Story Reader</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -31,6 +31,7 @@
         }
         h1 {
             margin: 10px 0;
+            text-align: center;
         }
         p {
             line-height: 1.6;
@@ -57,7 +58,7 @@
     </footer>
 
     <script>
-        // Load story data from URL parameters
+        // Extract story details from URL parameters
         const params = new URLSearchParams(window.location.search);
         const title = params.get('title');
         const cover = params.get('cover');
