@@ -168,13 +168,16 @@
             const homeContainer = document.getElementById("featured-stories");
             const genreContainer = document.getElementById("genre-stories");
             const latestContainer = document.getElementById("latest-stories");
-
             homeContainer.innerHTML = "";
             genreContainer.innerHTML = "";
             latestContainer.innerHTML = "";
 
-            stories.forEach((story, index) => addStoryCard(homeContainer, story, index));
+            // Home (Featured Stories)
+            stories.forEach((story, index) => {
+                addStoryCard(homeContainer, story, index);
+            });
 
+            // Genres
             const genres = {};
             stories.forEach((story, index) => {
                 if (!genres[story.genre]) genres[story.genre] = [];
@@ -185,10 +188,15 @@
                 const genreTitle = document.createElement("h3");
                 genreTitle.innerText = genre;
                 genreContainer.appendChild(genreTitle);
-                genres[genre].forEach(({ story, index }) => addStoryCard(genreContainer, story, index));
+                genres[genre].forEach(({ story, index }) => {
+                    addStoryCard(genreContainer, story, index);
+                });
             });
 
-            stories.slice().reverse().forEach((story, index) => addStoryCard(latestContainer, story, index));
+            // Latest
+            stories.slice().reverse().forEach((story, index) => {
+                addStoryCard(latestContainer, story, index);
+            });
         }
 
         function addStoryCard(container, story, index) {
@@ -210,8 +218,10 @@
         }
 
         function showSection(sectionId) {
-            document.querySelectorAll('.container').forEach(section => section.classList.add('hidden'));
-            document.getElementById(sectionId).classList.remove('hidden');
+            document.querySelectorAll('.container').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(sectionId).style.display = 'block';
         }
 
         window.onload = loadStories;
