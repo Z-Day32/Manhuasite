@@ -212,9 +212,13 @@
         }
 
         function readStory(index) {
-            const story = stories[index];
-            const url = `story.html?title=${encodeURIComponent(story.title)}&cover=${encodeURIComponent(story.cover)}&content=${encodeURIComponent(story.content)}`;
-            window.location.href = url;
+            if (stories[index]) { // Ensure the story exists
+                const story = stories[index];
+                const url = `story.html?title=${encodeURIComponent(story.title)}&cover=${encodeURIComponent(story.cover)}&content=${encodeURIComponent(story.content)}`;
+                window.location.href = url;
+            } else {
+                console.error("Story not found.");
+            }
         }
 
         function showSection(sectionId) {
