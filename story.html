@@ -31,14 +31,12 @@
             border-radius: 5px;
             margin-bottom: 20px;
         }
-        h1 {
+        h1, h2 {
             text-align: center;
-            font-size: 2em;
         }
         p {
-            text-align: justify;
             line-height: 1.6;
-            margin-bottom: 20px;
+            text-align: justify;
         }
         a {
             display: block;
@@ -49,31 +47,52 @@
             background-color: #222;
             padding: 10px 20px;
             border-radius: 5px;
-            width: 150px;
+            width: fit-content;
             margin: 0 auto;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1 id="story-title">Story Title</h1>
+        <h1 id="story-title">Loading...</h1>
     </header>
     <div class="container">
         <img id="story-cover" src="" alt="Story Cover">
-        <p id="story-content">Story content will appear here...</p>
+        <h2>Chapter 1</h2>
+        <p id="story-content">Loading story...</p>
         <a href="index.html">Back to Home</a>
     </div>
+
     <script>
         // Extract parameters from the URL
         const params = new URLSearchParams(window.location.search);
         const title = params.get("title");
         const cover = params.get("cover");
-        const content = params.get("content");
+        const file = params.get("file");
 
-        // Inject story data into the page
-        document.getElementById("story-title").innerText = title || "No Title Available";
+        // Update the title and cover image
+        document.getElementById("story-title").innerText = title || "Story Title";
         document.getElementById("story-cover").src = cover || "";
-        document.getElementById("story-content").innerText = content || "No content available.";
+
+        // Fetch and display the story content
+        const contentElement = document.getElementById("story-content");
+        if (file) {
+            const fileUrl = `https://raw.githubusercontent.com/Z-Day32/Readenglish/main/stories/${file}`;
+            fetch(fileUrl)
+                .then(response => {
+                    if (!response.ok) throw new Error("Story content not found");
+                    return response.text();
+                })
+                .then(text => {
+                    contentElement.innerText = text;
+                })
+                .catch(error => {
+                    contentElement.innerText = "Unable to load story content.";
+                    console.error(error);
+                });
+        } else {
+            contentElement.innerText = "No story file specified.";
+        }
     </script>
 </body>
 </html>
