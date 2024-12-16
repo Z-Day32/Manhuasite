@@ -43,16 +43,18 @@
             justify-content: space-between;
             margin-top: 20px;
         }
-        nav a {
+        nav a, button {
             text-decoration: none;
             color: white;
             background-color: #222;
             padding: 10px 20px;
+            border: none;
             border-radius: 5px;
+            cursor: pointer;
         }
-        .error {
-            color: red;
-            text-align: center;
+        select {
+            padding: 5px;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -62,44 +64,80 @@
     </header>
     <div class="container">
         <img id="story-cover" src="" alt="Story Cover">
-        <h2>Chapter 1</h2>
-        <p id="story-content">Loading story...</p>
+        <h2 id="chapter-title">Chapter 1</h2>
+        <p id="story-content">Loading...</p>
+        <div>
+            <label for="chapter-select">Select Chapter:</label>
+            <select id="chapter-select" onchange="loadSelectedChapter()"></select>
+        </div>
+        <nav>
+            <button id="prev-button" onclick="navigateChapter(-1)">Previous Chapter</button>
+            <button id="next-button" onclick="navigateChapter(1)">Next Chapter</button>
+        </nav>
         <nav>
             <a href="index.html">Back to Home</a>
         </nav>
     </div>
 
     <script>
-        // Extract parameters from the URL
         const params = new URLSearchParams(window.location.search);
         const title = params.get("title");
         const cover = params.get("cover");
-        const file = params.get("file");
+        const storyFolder = params.get("file").replace(".txt", ""); // Assuming file param contains "story_name"
 
-        // Update the story title and cover image
+        const totalChapters = 5; // Example: Adjust this based on the actual chapters available.
+        let currentChapter = 1;
+
         document.getElementById("story-title").innerText = title || "Story Title";
         document.getElementById("story-cover").src = cover || "";
 
-        // Fetch the story content
-        const contentElement = document.getElementById("story-content");
+        const storyContent = document.getElementById("story-content");
+        const chapterTitle = document.getElementById("chapter-title");
+        const chapterSelect = document.getElementById("chapter-select");
 
-        if (file) {
-            const fileUrl = `https://raw.githubusercontent.com/Z-Day32/Readenglish/main/stories/${file}`;
+        // Populate dropdown for chapters
+        for (let i = 1; i <= totalChapters; i++) {
+            const option = document.createElement("option");
+            option.value = i;
+            option.innerText = `Chapter ${i}`;
+            chapterSelect.appendChild(option);
+        }
+
+        function loadChapter(chapter) {
+            currentChapter = chapter;
+            chapterTitle.innerText = `Chapter ${chapter}`;
+            chapterSelect.value = chapter;
+
+            const fileUrl = `https://raw.githubusercontent.com/Z-Day32/Readenglish/main/stories/${storyFolder}/chapter${chapter}.txt`;
+
             fetch(fileUrl)
                 .then(response => {
-                    if (!response.ok) throw new Error("Story file not found.");
+                    if (!response.ok) throw new Error("Chapter not found.");
                     return response.text();
                 })
                 .then(text => {
-                    contentElement.innerText = text;
+                    storyContent.innerText = text;
                 })
                 .catch(error => {
                     console.error(error);
-                    contentElement.innerHTML = `<p class="error">Unable to load the story. Please check if the story file exists.</p>`;
+                    storyContent.innerHTML = `<p style="color: red;">Chapter not available.</p>`;
                 });
-        } else {
-            contentElement.innerHTML = `<p class="error">No story file specified.</p>`;
         }
+
+        function navigateChapter(offset) {
+            const nextChapter = currentChapter + offset;
+            if (nextChapter >= 1 && nextChapter <= totalChapters) {
+                loadChapter(nextChapter);
+            }
+        }
+
+        function loadSelectedChapter() {
+            const selectedChapter = parseInt(chapterSelect.value);
+            loadChapter(selectedChapter);
+        }
+
+        // Initial chapter load
+        loadChapter(currentChapter);
     </script>
 </body>
 </html>
