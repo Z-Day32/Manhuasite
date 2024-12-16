@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manhwa Reader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: #222;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 10px 0;
+        }
+        nav a {
+            text-decoration: none;
+            color: #222;
+            font-weight: bold;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 10px;
+        }
+        .manhwa-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            background: white;
+            margin: 10px;
+            width: calc(25% - 20px);
+            display: inline-block;
+            vertical-align: top;
+        }
+        .manhwa-card img {
+            width: 100%;
+            height: auto;
+        }
+        .manhwa-card h3 {
+            font-size: 1.1em;
+            margin: 10px;
+        }
+        .ad-banner {
+            text-align: center;
+            margin: 20px 0;
+            background: #ddd;
+            padding: 10px;
+            border: 1px dashed #aaa;
+        }
+        footer {
+            text-align: center;
+            background-color: #222;
+            color: white;
+            padding: 10px 0;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Manhwa Reader</h1>
+    </header>
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">Genres</a>
+        <a href="#">Latest</a>
+        <a href="#">Contact</a>
+    </nav>
+    <div class="container">
+        <div class="ad-banner">
+            Placeholder for Advertisement (728x90)
+        </div>
+
+        <h2>Featured Manhwa</h2>
+        <div class="manhwa-card">
+            <img src="https://via.placeholder.com/150" alt="Manhwa Cover">
+            <h3>Title: Example Manhwa</h3>
+            <p>Genre: Action, Adventure</p>
+        </div>
+        <div class="manhwa-card">
+            <img src="https://via.placeholder.com/150" alt="Manhwa Cover">
+            <h3>Title: Another Manhwa</h3>
+            <p>Genre: Romance, Comedy</p>
+        </div>
+        <div class="manhwa-card">
+            <img src="https://via.placeholder.com/150" alt="Manhwa Cover">
+            <h3>Title: Cool Manhwa</h3>
+            <p>Genre: Fantasy, Drama</p>
+        </div>
+        <div class="manhwa-card">
+            <img src="https://via.placeholder.com/150" alt="Manhwa Cover">
+            <h3>Title: Mystery Manhwa</h3>
+            <p>Genre: Mystery, Thriller</p>
+        </div>
+
+        <div class="ad-banner">
+            Placeholder for Advertisement (300x250)
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2024 Manhwa Reader | All Rights Reserved</p>
+    </footer>
+</body>
+</html>
