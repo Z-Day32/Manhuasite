@@ -44,6 +44,10 @@
             vertical-align: top;
             text-align: center;
         }
+        .manhwa-card img {
+            width: 100%;
+            height: auto;
+        }
         .manhwa-card h3 {
             font-size: 1.1em;
             margin: 10px;
@@ -56,6 +60,20 @@
             color: white;
             cursor: pointer;
             border-radius: 5px;
+        }
+        .ad-banner {
+            text-align: center;
+            margin: 20px 0;
+            background: #ddd;
+            padding: 10px;
+            border: 1px dashed #aaa;
+        }
+        footer {
+            text-align: center;
+            background-color: #222;
+            color: white;
+            padding: 10px 0;
+            margin-top: 20px;
         }
         #story-output {
             margin-top: 20px;
@@ -77,14 +95,21 @@
         <a href="#">Contact</a>
     </nav>
     <div class="container">
+        <div class="ad-banner">
+            Placeholder for Advertisement (728x90)
+        </div>
+
         <h2>Featured Manhwa</h2>
         <div class="manhwa-card">
+            <img id="story-cover" src="https://via.placeholder.com/300x400?text=Generated+Story" alt="Story Cover">
             <h3 id="story-title">Generated Story Title</h3>
-            <p id="story-summary">Click the button to read a story.</p>
+            <p id="story-summary">Click the button to generate a new story.</p>
             <button onclick="generateStory()">Generate Story</button>
         </div>
 
-        <div id="story-output"></div>
+        <div class="ad-banner">
+            Placeholder for Advertisement (300x250)
+        </div>
     </div>
     <footer>
         <p>&copy; 2024 Manhwa Reader | All Rights Reserved</p>
@@ -92,18 +117,35 @@
 
     <script>
         const stories = [
-            { title: "The Lone Swordmaster", summary: "In a forgotten realm, a lone swordmaster challenges the heavens to reclaim his honor." },
-            { title: "Rebirth of the Mage", summary: "After falling to betrayal, the greatest mage is reborn with unmatched power to seek revenge." },
-            { title: "Demon King's Apprentice", summary: "A young hero is forced to become the apprentice of the Demon King, questioning good and evil." },
-            { title: "Tower of Infinity", summary: "Climbing an endless tower, a boy faces trials that will shape him into a legend." }
+            {
+                title: "The Lone Swordmaster",
+                summary: "In a forgotten realm, a lone swordmaster challenges the heavens to reclaim his honor.",
+                cover: "https://via.placeholder.com/300x400?text=The+Lone+Swordmaster"
+            },
+            {
+                title: "Rebirth of the Mage",
+                summary: "After falling to betrayal, the greatest mage is reborn with unmatched power to seek revenge.",
+                cover: "https://via.placeholder.com/300x400?text=Rebirth+of+the+Mage"
+            },
+            {
+                title: "Demon King's Apprentice",
+                summary: "A young hero is forced to become the apprentice of the Demon King, questioning good and evil.",
+                cover: "https://via.placeholder.com/300x400?text=Demon+King's+Apprentice"
+            },
+            {
+                title: "Tower of Infinity",
+                summary: "Climbing an endless tower, a boy faces trials that will shape him into a legend.",
+                cover: "https://via.placeholder.com/300x400?text=Tower+of+Infinity"
+            }
         ];
 
         let currentIndex = 0;
 
         function generateStory() {
             const story = stories[currentIndex];
-            document.getElementById("story-title").innerText = story.title;
-            document.getElementById("story-summary").innerText = story.summary;
+            document.getElementById('story-title').innerText = story.title;
+            document.getElementById('story-summary').innerText = story.summary;
+            document.getElementById('story-cover').src = story.cover;
 
             currentIndex = (currentIndex + 1) % stories.length; // Cycle through stories
         }
