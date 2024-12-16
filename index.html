@@ -137,14 +137,14 @@
             {
                 title: "The Lone Swordmaster",
                 summary: "In a forgotten realm, a lone swordmaster challenges the heavens to reclaim his honor.",
-                cover: "https://raw.githubusercontent.com/Z-Day32/Readenglish/main/images/DALL%C2%B7E%202024-12-16%2014.22.43%20-%20A%20dramatic%20fantasy%20cover%20art%20for%20a%20story%20titled%20'The%20Lone%20Swordmaster'.%20The%20image%20features%20a%20lone%20warrior%20with%20a%20long%20sword%20standing%20on%20a%20mountain%20pea.webp",
+                cover: "https://raw.githubusercontent.com/Z-Day32/Readenglish/main/images/DALLE20241216LoneSwordmaster.webp",
                 genre: "Action",
                 content: "Long ago, a lone swordmaster set out to challenge the heavens to reclaim his honor and destiny."
             },
             {
                 title: "Rebirth of the Mage",
                 summary: "After falling to betrayal, the greatest mage is reborn with unmatched power to seek revenge.",
-                cover: "https://via.placeholder.com/300x400?text=Rebirth+of+the+Mage",
+                cover: "https://via.placeholder.com/300x400?text=RebirthMage",
                 genre: "Fantasy",
                 content: "Betrayed and left for dead, the greatest mage awakens in a new body to reshape his fate."
             },
@@ -212,7 +212,7 @@
         }
 
         function readStory(index) {
-            if (stories[index]) { // Ensure the story exists
+            if (stories[index]) {
                 const story = stories[index];
                 const url = `story.html?title=${encodeURIComponent(story.title)}&cover=${encodeURIComponent(story.cover)}&content=${encodeURIComponent(story.content)}`;
                 window.location.href = url;
