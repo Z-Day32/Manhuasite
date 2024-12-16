@@ -14,7 +14,7 @@
         header {
             background-color: #222;
             color: white;
-            padding: 10px 20px;
+            padding: 10px;
             text-align: center;
         }
         .container {
@@ -24,6 +24,7 @@
             background: white;
             border: 1px solid #ddd;
             border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
         img {
             max-width: 100%;
@@ -31,23 +32,25 @@
             margin-bottom: 20px;
         }
         h1 {
-            margin: 10px 0;
             text-align: center;
+            font-size: 2em;
         }
         p {
-            line-height: 1.6;
             text-align: justify;
+            line-height: 1.6;
+            margin-bottom: 20px;
         }
         a {
             display: block;
             text-align: center;
-            margin: 20px auto;
+            margin-top: 20px;
             color: white;
             text-decoration: none;
             background-color: #222;
             padding: 10px 20px;
             border-radius: 5px;
-            width: fit-content;
+            width: 150px;
+            margin: 0 auto;
         }
     </style>
 </head>
@@ -60,18 +63,17 @@
         <p id="story-content">Story content will appear here...</p>
         <a href="index.html">Back to Home</a>
     </div>
-
     <script>
-        // Get parameters from the URL
+        // Extract parameters from the URL
         const params = new URLSearchParams(window.location.search);
         const title = params.get("title");
         const cover = params.get("cover");
         const content = params.get("content");
 
-        // Update page with story details
-        document.getElementById("story-title").innerText = title || "Story Title";
+        // Inject story data into the page
+        document.getElementById("story-title").innerText = title || "No Title Available";
         document.getElementById("story-cover").src = cover || "";
-        document.getElementById("story-content").innerText = content || "No story content available.";
+        document.getElementById("story-content").innerText = content || "No content available.";
     </script>
 </body>
 </html>
