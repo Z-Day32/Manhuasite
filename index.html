@@ -155,22 +155,26 @@
             {
                 title: "The Lone Swordmaster",
                 summary: "In a forgotten realm, a lone swordmaster challenges the heavens to reclaim his honor.",
-                cover: "https://raw.githubusercontent.com/Z-Day32/Readenglish/main/images/DALL%C2%B7E%202024-12-16%2014.22.43%20-%20A%20dramatic%20fantasy%20cover%20art%20for%20a%20story%20titled%20'The%20Lone%20Swordmaster'.%20The%20image%20features%20a%20lone%20warrior%20with%20a%20long%20sword%20standing%20on%20a%20mountain%20pea.webp"
+                cover: "https://raw.githubusercontent.com/Z-Day32/Readenglish/main/images/DALL%C2%B7E%202024-12-16%2014.22.43%20-%20A%20dramatic%20fantasy%20cover%20art%20for%20a%20story%20titled%20'The%20Lone%20Swordmaster'.%20The%20image%20features%20a%20lone%20warrior%20with%20a%20long%20sword%20standing%20on%20a%20mountain%20pea.webp",
+                content: "Long ago, in a forgotten realm, a lone swordmaster set out to challenge the heavens to reclaim his honor and destiny. His blade, forged in celestial flames, could cut through mountains and fate alike."
             },
             {
                 title: "Rebirth of the Mage",
                 summary: "After falling to betrayal, the greatest mage is reborn with unmatched power to seek revenge.",
-                cover: "https://via.placeholder.com/300x400?text=Rebirth+of+the+Mage"
+                cover: "https://via.placeholder.com/300x400?text=Rebirth+of+the+Mage",
+                content: "Betrayed and left for dead, the greatest mage of his time awakens in a new body with his powers intact. Now he seeks vengeance on those who wronged him and a new chance to reshape his fate."
             },
             {
                 title: "Demon King's Apprentice",
                 summary: "A young hero is forced to become the apprentice of the Demon King, questioning good and evil.",
-                cover: "https://via.placeholder.com/300x400?text=Demon+King's+Apprentice"
+                cover: "https://via.placeholder.com/300x400?text=Demon+King's+Apprentice",
+                content: "Chosen to slay the Demon King, a young hero is instead forced to learn from him. What he discovers shakes his understanding of good, evil, and the truth of the war."
             },
             {
                 title: "Tower of Infinity",
                 summary: "Climbing an endless tower, a boy faces trials that will shape him into a legend.",
-                cover: "https://via.placeholder.com/300x400?text=Tower+of+Infinity"
+                cover: "https://via.placeholder.com/300x400?text=Tower+of+Infinity",
+                content: "An endless tower promises power and glory to those who climb its heights. Each floor presents a new trial, and one boy's courage will determine if he becomes a legend."
             }
         ];
 
@@ -185,10 +189,15 @@
                     <img src="${story.cover}" alt="${story.title}">
                     <h3>${story.title}</h3>
                     <p>${story.summary}</p>
-                    <button onclick="alert('Read More: ${story.title}')">Read More</button>
+                    <button onclick="readStory('${story.title}', '${story.cover}', '${story.content}')">Read More</button>
                 `;
                 container.appendChild(card);
             });
+        }
+
+        function readStory(title, cover, content) {
+            const url = `story.html?title=${encodeURIComponent(title)}&cover=${encodeURIComponent(cover)}&content=${encodeURIComponent(content)}`;
+            window.location.href = url;
         }
 
         // Load stories on page load
