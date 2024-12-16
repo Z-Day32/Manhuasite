@@ -38,17 +38,21 @@
             line-height: 1.6;
             text-align: justify;
         }
-        a {
-            display: block;
-            text-align: center;
+        nav {
+            display: flex;
+            justify-content: space-between;
             margin-top: 20px;
-            color: white;
+        }
+        nav a {
             text-decoration: none;
+            color: white;
             background-color: #222;
             padding: 10px 20px;
             border-radius: 5px;
-            width: fit-content;
-            margin: 0 auto;
+        }
+        .error {
+            color: red;
+            text-align: center;
         }
     </style>
 </head>
@@ -60,7 +64,9 @@
         <img id="story-cover" src="" alt="Story Cover">
         <h2>Chapter 1</h2>
         <p id="story-content">Loading story...</p>
-        <a href="index.html">Back to Home</a>
+        <nav>
+            <a href="index.html">Back to Home</a>
+        </nav>
     </div>
 
     <script>
@@ -70,28 +76,29 @@
         const cover = params.get("cover");
         const file = params.get("file");
 
-        // Update the title and cover image
+        // Update the story title and cover image
         document.getElementById("story-title").innerText = title || "Story Title";
         document.getElementById("story-cover").src = cover || "";
 
-        // Fetch and display the story content
+        // Fetch the story content
         const contentElement = document.getElementById("story-content");
+
         if (file) {
             const fileUrl = `https://raw.githubusercontent.com/Z-Day32/Readenglish/main/stories/${file}`;
             fetch(fileUrl)
                 .then(response => {
-                    if (!response.ok) throw new Error("Story content not found");
+                    if (!response.ok) throw new Error("Story file not found.");
                     return response.text();
                 })
                 .then(text => {
                     contentElement.innerText = text;
                 })
                 .catch(error => {
-                    contentElement.innerText = "Unable to load story content. Please verify the file exists.";
                     console.error(error);
+                    contentElement.innerHTML = `<p class="error">Unable to load the story. Please check if the story file exists.</p>`;
                 });
         } else {
-            contentElement.innerText = "No story file specified.";
+            contentElement.innerHTML = `<p class="error">No story file specified.</p>`;
         }
     </script>
 </body>
