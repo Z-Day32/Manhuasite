@@ -45,6 +45,16 @@
             vertical-align: top;
             text-align: center;
         }
+        @media (max-width: 768px) {
+            .manhwa-card {
+                width: calc(50% - 20px);
+            }
+        }
+        @media (max-width: 480px) {
+            .manhwa-card {
+                width: 100%;
+            }
+        }
         .manhwa-card img {
             width: 100%;
             height: auto;
@@ -76,14 +86,6 @@
             padding: 10px 0;
             margin-top: 20px;
         }
-        .section-title {
-            text-align: center;
-            margin: 20px 0;
-            font-size: 1.5em;
-        }
-        .hidden {
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -103,29 +105,6 @@
         </div>
         <h2 class="section-title">Featured Manhwa</h2>
         <div id="featured-stories"></div>
-        <div class="ad-banner">
-            Placeholder for Advertisement (300x250)
-        </div>
-    </div>
-
-    <div id="genres" class="container hidden">
-        <h2 class="section-title">Browse by Genres</h2>
-        <div id="genre-stories"></div>
-    </div>
-
-    <div id="latest" class="container hidden">
-        <h2 class="section-title">Latest Stories</h2>
-        <div id="latest-stories"></div>
-    </div>
-
-    <div id="contact" class="container hidden">
-        <h2 class="section-title">Contact Us</h2>
-        <form id="contact-form">
-            <input type="text" placeholder="Your Name" required>
-            <input type="email" placeholder="Your Email" required>
-            <textarea placeholder="Your Message" rows="5" required></textarea>
-            <button type="submit">Send Message</button>
-        </form>
     </div>
 
     <footer>
@@ -133,100 +112,47 @@
     </footer>
 
     <script>
-        const storyBaseUrl = "https://raw.githubusercontent.com/Z-Day32/Readenglish/main/stories/";
         const stories = [
             {
                 title: "The Lone Swordmaster",
                 summary: "In a forgotten realm, a lone swordmaster challenges the heavens to reclaim his honor.",
                 cover: "https://raw.githubusercontent.com/Z-Day32/Readenglish/main/images/lone_swordmaster.webp",
-                genre: "Action",
                 file: "lone_swordmaster.txt"
             },
             {
                 title: "Rebirth of the Mage",
                 summary: "After falling to betrayal, the greatest mage is reborn with unmatched power to seek revenge.",
-                cover: "https://via.placeholder.com/300x400?text=Rebirth+of+the+Mage",
-                genre: "Fantasy",
+                cover: "https://raw.githubusercontent.com/Z-Day32/Readenglish/main/images/rebirth_of_the_mage.webp",
                 file: "rebirth_of_the_mage.txt"
             },
             {
                 title: "Demon King's Apprentice",
                 summary: "A young hero is forced to become the apprentice of the Demon King, questioning good and evil.",
-                cover: "https://via.placeholder.com/300x400?text=Demon+King's+Apprentice",
-                genre: "Drama",
+                cover: "https://raw.githubusercontent.com/Z-Day32/Readenglish/main/images/demon_kings_apprentice.webp",
                 file: "demon_kings_apprentice.txt"
-            },
-            {
-                title: "Tower of Infinity",
-                summary: "Climbing an endless tower, a boy faces trials that will shape him into a legend.",
-                cover: "https://via.placeholder.com/300x400?text=Tower+of+Infinity",
-                genre: "Adventure",
-                file: "tower_of_infinity.txt"
             }
         ];
 
         function loadStories() {
-            const homeContainer = document.getElementById("featured-stories");
-            const genreContainer = document.getElementById("genre-stories");
-            const latestContainer = document.getElementById("latest-stories");
-            homeContainer.innerHTML = "";
-            genreContainer.innerHTML = "";
-            latestContainer.innerHTML = "";
-
-            // Home (Featured Stories)
+            const container = document.getElementById("featured-stories");
+            container.innerHTML = "";
             stories.forEach((story, index) => {
-                addStoryCard(homeContainer, story, index);
+                const card = document.createElement("div");
+                card.className = "manhwa-card";
+                card.innerHTML = `
+                    <img src="${story.cover}" alt="${story.title}">
+                    <h3>${story.title}</h3>
+                    <p>${story.summary}</p>
+                    <button onclick="readStory(${index})">Read More</button>
+                `;
+                container.appendChild(card);
             });
-
-            // Genres
-            const genres = {};
-            stories.forEach((story, index) => {
-                if (!genres[story.genre]) genres[story.genre] = [];
-                genres[story.genre].push({ story, index });
-            });
-
-            Object.keys(genres).forEach(genre => {
-                const genreTitle = document.createElement("h3");
-                genreTitle.innerText = genre;
-                genreContainer.appendChild(genreTitle);
-                genres[genre].forEach(({ story, index }) => {
-                    addStoryCard(genreContainer, story, index);
-                });
-            });
-
-            // Latest
-            stories.slice().reverse().forEach((story, index) => {
-                addStoryCard(latestContainer, story, index);
-            });
-        }
-
-        function addStoryCard(container, story, index) {
-            const card = document.createElement("div");
-            card.className = "manhwa-card";
-            card.innerHTML = `
-                <img src="${story.cover}" alt="${story.title}">
-                <h3>${story.title}</h3>
-                <p>${story.summary}</p>
-                <button onclick="readStory(${index})">Read More</button>
-            `;
-            container.appendChild(card);
         }
 
         function readStory(index) {
-            if (stories[index]) {
-                const story = stories[index];
-                const url = `story.html?title=${encodeURIComponent(story.title)}&cover=${encodeURIComponent(story.cover)}&file=${encodeURIComponent(story.file)}`;
-                window.location.href = url;
-            } else {
-                console.error("Story not found.");
-            }
-        }
-
-        function showSection(sectionId) {
-            document.querySelectorAll('.container').forEach(section => {
-                section.style.display = 'none';
-            });
-            document.getElementById(sectionId).style.display = 'block';
+            const story = stories[index];
+            const url = `story.html?title=${encodeURIComponent(story.title)}&cover=${encodeURIComponent(story.cover)}&file=${encodeURIComponent(story.file)}`;
+            window.location.href = url;
         }
 
         window.onload = loadStories;
