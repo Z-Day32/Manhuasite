@@ -124,13 +124,11 @@
                 console.log("Error returned:", error);
 
                 const container = document.getElementById('featured-stories');
+                container.innerHTML = "";
 
                 if (error) {
                     throw error;
                 }
-
-                // Clear the container
-                container.innerHTML = "";
 
                 if (!data || data.length === 0) {
                     container.innerText = "No stories found. Please check your 'covers' bucket.";
