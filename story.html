@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Story Reader</title>
+    <title>Read Story</title>
     <style>
-        body, html {
+        body {
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            scroll-behavior: smooth; /* Enable smooth scrolling */
             background-color: #f4f4f9;
-            font-family: Arial, sans-serif;
         }
         header {
             background-color: #222;
@@ -21,92 +20,129 @@
         .container {
             max-width: 800px;
             margin: 20px auto;
-            padding: 10px;
+            padding: 20px;
             background: white;
             border: 1px solid #ddd;
             border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
-        .chapter-image {
-            width: 100%;
-            height: auto;
+        img {
+            max-width: 100%;
+            border-radius: 5px;
             margin-bottom: 20px;
         }
-        .chapter-content {
-            line-height: 1.6;
-            color: #333;
+        h1, h2 {
+            text-align: center;
         }
-        .navigation {
+        p {
+            line-height: 1.6;
+            text-align: justify;
+        }
+        nav {
             display: flex;
             justify-content: space-between;
             margin-top: 20px;
         }
-        .navigation button {
+        nav a, button {
+            text-decoration: none;
+            color: white;
+            background-color: #222;
             padding: 10px 20px;
             border: none;
-            background-color: #222;
-            color: white;
-            cursor: pointer;
             border-radius: 5px;
+            cursor: pointer;
+        }
+        select {
+            padding: 5px;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1 id="story-title">Story Title</h1>
+        <h1 id="story-title">Loading...</h1>
     </header>
     <div class="container">
-        <img id="story-cover" class="chapter-image" src="" alt="Cover Image">
-        <div id="chapter-content" class="chapter-content">
-            Loading chapter...
+        <img id="story-cover" src="" alt="Story Cover">
+        <h2 id="chapter-title">Chapter 1</h2>
+        <p id="story-content">Loading...</p>
+        <div>
+            <label for="chapter-select">Select Chapter:</label>
+            <select id="chapter-select" onchange="loadSelectedChapter()"></select>
         </div>
-        <div class="navigation">
-            <button onclick="prevChapter()">Previous Chapter</button>
-            <button onclick="nextChapter()">Next Chapter</button>
-        </div>
+        <nav>
+            <button id="prev-button" onclick="navigateChapter(-1)">Previous Chapter</button>
+            <button id="next-button" onclick="navigateChapter(1)">Next Chapter</button>
+        </nav>
+        <nav>
+            <a href="index.html">Back to Home</a>
+        </nav>
     </div>
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const storyTitle = urlParams.get("title");
-        const storyCover = urlParams.get("cover");
-        const storyFile = urlParams.get("file");
+        const params = new URLSearchParams(window.location.search);
+        const title = params.get("title");
+        const cover = params.get("cover");
+        const storyFolder = params.get("file").replace(".txt", ""); // Assuming file param contains "story_name"
 
+        const totalChapters = 5; // Example: Adjust this based on the actual chapters available.
         let currentChapter = 1;
 
-        document.getElementById("story-title").innerText = storyTitle;
-        document.getElementById("story-cover").src = storyCover;
+        document.getElementById("story-title").innerText = title || "Story Title";
+        document.getElementById("story-cover").src = cover || "";
 
-        function loadChapter(chapterNumber) {
-            fetch(`https://raw.githubusercontent.com/Z-Day32/Readenglish/main/stories/${storyFile}`)
-                .then(response => response.text())
-                .then(data => {
-                    const chapters = data.split("\n\n"); // Split chapters by double newlines
-                    if (chapterNumber > 0 && chapterNumber <= chapters.length) {
-                        document.getElementById("chapter-content").innerText = chapters[chapterNumber - 1];
-                        currentChapter = chapterNumber;
+        const storyContent = document.getElementById("story-content");
+        const chapterTitle = document.getElementById("chapter-title");
+        const chapterSelect = document.getElementById("chapter-select");
 
-                        // Force scroll to top for all browsers
-                        document.documentElement.scrollTop = 0; // For modern browsers
-                        document.body.scrollTop = 0;            // For older browsers
-                    } else {
-                        alert("No more chapters available.");
-                    }
+        // Populate dropdown for chapters
+        for (let i = 1; i <= totalChapters; i++) {
+            const option = document.createElement("option");
+            option.value = i;
+            option.innerText = `Chapter ${i}`;
+            chapterSelect.appendChild(option);
+        }
+
+        function loadChapter(chapter) {
+            currentChapter = chapter;
+            chapterTitle.innerText = `Chapter ${chapter}`;
+            chapterSelect.value = chapter;
+
+            const fileUrl = `https://raw.githubusercontent.com/Z-Day32/Readenglish/main/stories/${storyFolder}/chapter${chapter}.txt`;
+
+            fetch(fileUrl)
+                .then(response => {
+                    if (!response.ok) throw new Error("Chapter not found.");
+                    return response.text();
+                })
+                .then(text => {
+                    storyContent.innerText = text;
+
+                    // Scroll to the top of the page
+                    window.scrollTo({
+                        top: 0,
+                        behavior: "smooth"
+                    });
                 })
                 .catch(error => {
-                    console.error("Error loading chapter:", error);
-                    document.getElementById("chapter-content").innerText = "Failed to load chapter.";
+                    console.error(error);
+                    storyContent.innerHTML = `<p style="color: red;">Chapter not available.</p>`;
                 });
         }
 
-        function nextChapter() {
-            loadChapter(currentChapter + 1);
+        function navigateChapter(offset) {
+            const nextChapter = currentChapter + offset;
+            if (nextChapter >= 1 && nextChapter <= totalChapters) {
+                loadChapter(nextChapter);
+            }
         }
 
-        function prevChapter() {
-            loadChapter(currentChapter - 1);
+        function loadSelectedChapter() {
+            const selectedChapter = parseInt(chapterSelect.value);
+            loadChapter(selectedChapter);
         }
 
-        // Load the first chapter initially
+        // Initial chapter load
         loadChapter(currentChapter);
     </script>
 </body>
