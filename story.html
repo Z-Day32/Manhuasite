@@ -117,10 +117,14 @@
                 })
                 .then(text => {
                     storyContent.innerText = text;
+                    // Scroll to the top after loading the chapter content
+                    window.scrollTo(0, 0);
                 })
                 .catch(error => {
                     console.error(error);
                     storyContent.innerHTML = `<p style="color: red;">Chapter not available.</p>`;
+                    // Scroll to the top even if there's an error
+                    window.scrollTo(0, 0);
                 });
         }
 
