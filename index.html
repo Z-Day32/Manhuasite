@@ -17,6 +17,19 @@
             padding: 10px;
             text-align: center;
         }
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            background-color: #444;
+            padding: 10px 0;
+        }
+        nav a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
         .container {
             max-width: 1200px;
             margin: 20px auto;
@@ -47,19 +60,52 @@
             cursor: pointer;
             border-radius: 5px;
         }
+        .section-title {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.5em;
+        }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <header>
         <h1>Welcome to Manhwa Reader</h1>
     </header>
+    <nav>
+        <a onclick="showSection('home'); return false;">Home</a>
+        <a onclick="showSection('genres'); return false;">Genres</a>
+        <a onclick="showSection('latest'); return false;">Latest</a>
+        <a onclick="showSection('contact'); return false;">Contact</a>
+    </nav>
 
-    <div class="container" id="featured-stories">
-        <p>Loading stories...</p>
+    <!-- Sections -->
+    <div id="home" class="container">
+        <h2 class="section-title">Featured Stories</h2>
+        <div id="featured-stories">
+            <p>Loading stories...</p>
+        </div>
     </div>
 
-    <!-- Include Supabase Library FIRST -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3"></script>
+    <div id="genres" class="container hidden">
+        <h2 class="section-title">Browse by Genres</h2>
+        <p>Coming soon...</p>
+    </div>
+
+    <div id="latest" class="container hidden">
+        <h2 class="section-title">Latest Updates</h2>
+        <p>Coming soon...</p>
+    </div>
+
+    <div id="contact" class="container hidden">
+        <h2 class="section-title">Contact Us</h2>
+        <p>Email us at: contact@manhwafans.com</p>
+    </div>
+
+    <!-- Supabase Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <!-- Custom Script -->
     <script>
@@ -67,24 +113,22 @@
         const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZsdmhxZ3R2cXF3bXRsYm96dW9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ1MDMxODksImV4cCI6MjA1MDA3OTE4OX0.cB5h8AlqLyymV7HFj0iImdqOYEydscrgZ7FOQQhjmJw";
         const supabase = createClient(supabaseUrl, supabaseKey);
 
-        console.log("Supabase initialized successfully!");
-
         async function loadStories() {
             try {
                 console.log("Fetching stories...");
                 const { data, error } = await supabase.storage.from('covers').list('', { limit: 10 });
-
+                
                 if (error) throw error;
 
-                console.log("Fetched stories:", data);
+                console.log("Stories fetched:", data);
 
                 const container = document.getElementById('featured-stories');
-                container.innerHTML = ""; // Clear placeholder text
+                container.innerHTML = ""; // Clear loading text
 
                 data.forEach(file => {
                     const storyTitle = file.name.split('/')[0];
                     const coverUrl = `${supabaseUrl}/storage/v1/object/public/covers/${file.name}`;
-
+                    
                     const card = document.createElement('div');
                     card.className = "manhwa-card";
                     card.innerHTML = `
@@ -96,13 +140,20 @@
                 });
             } catch (err) {
                 console.error("Error fetching stories:", err.message);
-                alert("Failed to load stories. Check the console for details.");
+                alert("Failed to load stories.");
             }
         }
 
         function readStory(title) {
             const url = `story.html?title=${encodeURIComponent(title)}`;
             window.location.href = url;
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.container').forEach(section => {
+                section.classList.add('hidden');
+            });
+            document.getElementById(sectionId).classList.remove('hidden');
         }
 
         window.onload = loadStories;
