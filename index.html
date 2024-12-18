@@ -46,6 +46,16 @@
             vertical-align: top;
             text-align: center;
         }
+        @media (max-width: 768px) {
+            .manhwa-card {
+                width: calc(50% - 20px);
+            }
+        }
+        @media (max-width: 480px) {
+            .manhwa-card {
+                width: 100%;
+            }
+        }
         .manhwa-card img {
             width: 100%;
             height: auto;
@@ -70,14 +80,6 @@
             padding: 10px 0;
             margin-top: 20px;
         }
-        .section-title {
-            text-align: center;
-            margin: 20px 0;
-            font-size: 1.5em;
-        }
-        .hidden {
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -92,28 +94,23 @@
     </nav>
 
     <div id="home" class="container">
-        <h2 class="section-title">Featured Manhwa</h2>
-        <div id="story-container"></div>
+        <h2>Featured Manhwa</h2>
+        <div id="featured-stories">Loading stories...</div>
     </div>
 
     <div id="genres" class="container hidden">
-        <h2 class="section-title">Browse by Genres</h2>
-        <p>Genres section coming soon...</p>
+        <h2>Browse by Genres</h2>
+        <p>Coming soon...</p>
     </div>
 
     <div id="latest" class="container hidden">
-        <h2 class="section-title">Latest Stories</h2>
-        <p>Latest stories section coming soon...</p>
+        <h2>Latest Stories</h2>
+        <p>Coming soon...</p>
     </div>
 
     <div id="contact" class="container hidden">
-        <h2 class="section-title">Contact Us</h2>
-        <form>
-            <input type="text" placeholder="Your Name" required><br>
-            <input type="email" placeholder="Your Email" required><br>
-            <textarea placeholder="Your Message" rows="5" required></textarea><br>
-            <button type="submit">Send Message</button>
-        </form>
+        <h2>Contact Us</h2>
+        <p>Email us at: contact@manhwareader.com</p>
     </div>
 
     <footer>
@@ -125,48 +122,48 @@
         const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZsdmhxZ3R2cXF3bXRsYm96dW9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ1MDMxODksImV4cCI6MjA1MDA3OTE4OX0.cB5h8AlqLyymV7HFj0iImdqOYEydscrgZ7FOQQhjmJw";
         const supabase = createClient(supabaseUrl, supabaseKey);
 
-        async function fetchStories() {
+        async function loadStories() {
+            const container = document.getElementById("featured-stories");
+            container.innerHTML = "Loading...";
+
             try {
-                const { data, error } = await supabase.storage.from('covers').list();
+                const { data, error } = await supabase.storage.from("covers").list();
+
                 if (error) throw error;
 
-                const container = document.getElementById("story-container");
-                container.innerHTML = ""; // Clear existing content
+                container.innerHTML = "";
+                for (const item of data) {
+                    const card = document.createElement("div");
+                    card.className = "manhwa-card";
+                    const imageUrl = `${supabaseUrl}/storage/v1/object/public/covers/${item.name}`;
+                    const storyTitle = item.name.split("/")[0];
 
-                for (const file of data) {
-                    if (file.name.startsWith('cover')) {
-                        const coverUrl = `${supabaseUrl}/storage/v1/object/public/covers/${file.name}`;
-                        const storyTitle = decodeURIComponent(file.name.split('/')[0]);
-
-                        // Generate card HTML
-                        const card = document.createElement("div");
-                        card.className = "manhwa-card";
-                        card.innerHTML = `
-                            <img src="${coverUrl}" alt="${storyTitle}">
-                            <h3>${storyTitle}</h3>
-                            <button onclick="readStory('${storyTitle}', '${coverUrl}')">Read More</button>
-                        `;
-                        container.appendChild(card);
-                    }
+                    card.innerHTML = `
+                        <img src="${imageUrl}" alt="${storyTitle}">
+                        <h3>${storyTitle}</h3>
+                        <button onclick="readStory('${storyTitle}', '${imageUrl}')">Read More</button>
+                    `;
+                    container.appendChild(card);
                 }
-            } catch (error) {
-                console.error("Error fetching stories:", error);
+            } catch (err) {
+                console.error("Error loading stories:", err);
+                container.innerHTML = "Failed to load stories. Try again later.";
             }
         }
 
         function readStory(title, coverUrl) {
-            const url = `story.html?title=${encodeURIComponent(title)}&cover=${encodeURIComponent(coverUrl)}`;
-            window.location.href = url;
+            const storyUrl = `story.html?title=${encodeURIComponent(title)}&cover=${encodeURIComponent(coverUrl)}`;
+            window.location.href = storyUrl;
         }
 
         function showSection(sectionId) {
-            document.querySelectorAll(".container").forEach(section => {
-                section.style.display = "none";
+            document.querySelectorAll('.container').forEach(section => {
+                section.classList.add('hidden');
             });
-            document.getElementById(sectionId).style.display = "block";
+            document.getElementById(sectionId).classList.remove('hidden');
         }
 
-        window.onload = fetchStories;
+        window.onload = loadStories;
     </script>
 </body>
 </html>
