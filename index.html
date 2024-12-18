@@ -58,14 +58,16 @@
         <p>Loading stories...</p>
     </div>
 
-    <!-- Supabase Library -->
+    <!-- Include Supabase Library FIRST -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3"></script>
 
-    <!-- Load Stories -->
+    <!-- Custom Script -->
     <script>
         const supabaseUrl = "https://flvhqgtvqqwmtlbozuoh.supabase.co";
         const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZsdmhxZ3R2cXF3bXRsYm96dW9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ1MDMxODksImV4cCI6MjA1MDA3OTE4OX0.cB5h8AlqLyymV7HFj0iImdqOYEydscrgZ7FOQQhjmJw";
         const supabase = createClient(supabaseUrl, supabaseKey);
+
+        console.log("Supabase initialized successfully!");
 
         async function loadStories() {
             try {
