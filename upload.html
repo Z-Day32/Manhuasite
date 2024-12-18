@@ -4,104 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Publish Your Story</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            padding: 20px;
-            text-align: center;
-        }
-        form {
-            max-width: 500px;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        input, button {
-            display: block;
-            width: 100%;
-            margin: 10px 0;
-            padding: 10px;
-        }
-        button {
-            background-color: #222;
-            color: white;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-        }
-        button:hover {
-            background-color: #444;
-        }
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script> <!-- Ensure Supabase is loaded first -->
 </head>
 <body>
     <h1>Publish Your Story</h1>
-    <form id="upload-form">
-        <input type="text" id="title" placeholder="Story Title" required>
+    <div>
+        <input type="text" id="story-title" placeholder="Story Title">
+        <br><br>
         <label>Upload Cover Image:</label>
-        <input type="file" id="cover" accept="image/*" required>
+        <input type="file" id="cover-upload" accept="image/*">
+        <br><br>
         <label>Upload Chapter Files (.txt):</label>
-        <input type="file" id="chapters" accept=".txt" multiple required>
-        <button type="submit">Upload Story</button>
-    </form>
+        <input type="file" id="chapters-upload" multiple accept=".txt">
+        <br><br>
+        <button onclick="uploadStory()">Upload Story</button>
+    </div>
 
-    <!-- Ensure Supabase is loaded first -->
     <script>
-        // Initialize Supabase BEFORE any usage
+        // Initialize Supabase Client
         const supabaseUrl = "https://flvhqgtvqqwmtlbozuoh.supabase.co";
-        const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZsdmhxZ3R2cXF3bXRsYm96dW9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ1MDMxODksImV4cCI6MjA1MDA3OTE4OX0.cB5h8AlqLyymV7HFj0iImdqOYEydscrgZ7FOQQhjmJw";
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZsdmhxZ3R2cXF3bXRsYm96dW9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ1MDMxODksImV4cCI6MjA1MDA3OTE4OX0.cB5h8AlqLyymV7HFj0iImdqOYEydscrgZ7FOQQhjmJw";
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-        console.log("Supabase initialized successfully.");
-
-        const form = document.getElementById("upload-form");
-        form.addEventListener("submit", async (e) => {
-            e.preventDefault();
-
-            const title = document.getElementById("title").value.trim();
-            const coverFile = document.getElementById("cover").files[0];
-            const chapterFiles = document.getElementById("chapters").files;
-
-            if (!title || !coverFile || chapterFiles.length === 0) {
-                alert("Please fill in all fields.");
-                return;
-            }
-
+        // Function to upload the story
+        async function uploadStory() {
             try {
+                const title = document.getElementById('story-title').value.trim();
+                const coverFile = document.getElementById('cover-upload').files[0];
+                const chapterFiles = document.getElementById('chapters-upload').files;
+
+                if (!title || !coverFile || chapterFiles.length === 0) {
+                    alert("Please fill in all fields and upload required files.");
+                    return;
+                }
+
                 console.log("Uploading cover image...");
                 const coverPath = `${title}/cover.${coverFile.name.split('.').pop()}`;
-                const { data: coverData, error: coverError } = await supabase
-                    .storage
+                const { data: coverData, error: coverError } = await supabase.storage
                     .from("covers")
                     .upload(coverPath, coverFile);
 
                 if (coverError) throw coverError;
-
                 console.log("Cover uploaded successfully:", coverData);
 
                 console.log("Uploading chapter files...");
                 for (const chapter of chapterFiles) {
                     const chapterPath = `${title}/${chapter.name}`;
-                    const { data: chapterData, error: chapterError } = await supabase
-                        .storage
+                    const { error: chapterError } = await supabase.storage
                         .from("stories")
                         .upload(chapterPath, chapter);
-
                     if (chapterError) throw chapterError;
-
-                    console.log(`Chapter uploaded: ${chapterPath}`);
                 }
 
                 alert("Story uploaded successfully!");
             } catch (error) {
-                console.error("Error during upload:", error.message);
-                alert("Error uploading story. Check the console for details.");
+                console.error("Error uploading story:", error);
+                alert("Error uploading story. Please check the console for details.");
             }
-        });
+        }
     </script>
 </body>
 </html>
