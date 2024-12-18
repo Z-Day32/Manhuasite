@@ -70,6 +70,14 @@
             padding: 10px 0;
             margin-top: 20px;
         }
+        .section-title {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.5em;
+        }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -77,15 +85,35 @@
         <h1>Welcome to Manhwa Reader</h1>
     </header>
     <nav>
-        <a href="#" onclick="showSection('home'); return false;">Home</a>
-        <a href="#" onclick="showSection('genres'); return false;">Genres</a>
-        <a href="#" onclick="showSection('latest'); return false;">Latest</a>
-        <a href="#" onclick="showSection('contact'); return false;">Contact</a>
+        <a onclick="showSection('home'); return false;">Home</a>
+        <a onclick="showSection('genres'); return false;">Genres</a>
+        <a onclick="showSection('latest'); return false;">Latest</a>
+        <a onclick="showSection('contact'); return false;">Contact</a>
     </nav>
 
     <div id="home" class="container">
-        <h2>Featured Stories</h2>
+        <h2 class="section-title">Featured Manhwa</h2>
         <div id="story-container"></div>
+    </div>
+
+    <div id="genres" class="container hidden">
+        <h2 class="section-title">Browse by Genres</h2>
+        <p>Genres section coming soon...</p>
+    </div>
+
+    <div id="latest" class="container hidden">
+        <h2 class="section-title">Latest Stories</h2>
+        <p>Latest stories section coming soon...</p>
+    </div>
+
+    <div id="contact" class="container hidden">
+        <h2 class="section-title">Contact Us</h2>
+        <form>
+            <input type="text" placeholder="Your Name" required><br>
+            <input type="email" placeholder="Your Email" required><br>
+            <textarea placeholder="Your Message" rows="5" required></textarea><br>
+            <button type="submit">Send Message</button>
+        </form>
     </div>
 
     <footer>
@@ -98,46 +126,47 @@
         const supabase = createClient(supabaseUrl, supabaseKey);
 
         async function fetchStories() {
-            const container = document.getElementById("story-container");
-            container.innerHTML = "Loading stories...";
-
             try {
-                // Fetch covers from Supabase storage
-                const { data, error } = await supabase.storage.from("covers").list("", { search: "cover" });
-
+                const { data, error } = await supabase.storage.from('covers').list();
                 if (error) throw error;
 
-                container.innerHTML = ""; // Clear the loading message
-                if (data.length === 0) {
-                    container.innerHTML = "<p>No stories available.</p>";
-                    return;
+                const container = document.getElementById("story-container");
+                container.innerHTML = ""; // Clear existing content
+
+                for (const file of data) {
+                    if (file.name.startsWith('cover')) {
+                        const coverUrl = `${supabaseUrl}/storage/v1/object/public/covers/${file.name}`;
+                        const storyTitle = decodeURIComponent(file.name.split('/')[0]);
+
+                        // Generate card HTML
+                        const card = document.createElement("div");
+                        card.className = "manhwa-card";
+                        card.innerHTML = `
+                            <img src="${coverUrl}" alt="${storyTitle}">
+                            <h3>${storyTitle}</h3>
+                            <button onclick="readStory('${storyTitle}', '${coverUrl}')">Read More</button>
+                        `;
+                        container.appendChild(card);
+                    }
                 }
-
-                data.forEach(file => {
-                    const title = file.name.split("/")[0]; // Extract story title from folder name
-                    const coverUrl = `${supabaseUrl}/storage/v1/object/public/covers/${file.name}`;
-
-                    const card = document.createElement("div");
-                    card.className = "manhwa-card";
-                    card.innerHTML = `
-                        <img src="${coverUrl}" alt="${title}">
-                        <h3>${title}</h3>
-                        <button onclick="openStory('${title}', '${coverUrl}')">Read More</button>
-                    `;
-                    container.appendChild(card);
-                });
             } catch (error) {
-                console.error("Error fetching stories:", error.message);
-                container.innerHTML = "<p style='color: red;'>Failed to load stories.</p>";
+                console.error("Error fetching stories:", error);
             }
         }
 
-        function openStory(title, coverUrl) {
+        function readStory(title, coverUrl) {
             const url = `story.html?title=${encodeURIComponent(title)}&cover=${encodeURIComponent(coverUrl)}`;
             window.location.href = url;
         }
 
-        fetchStories();
+        function showSection(sectionId) {
+            document.querySelectorAll(".container").forEach(section => {
+                section.style.display = "none";
+            });
+            document.getElementById(sectionId).style.display = "block";
+        }
+
+        window.onload = fetchStories;
     </script>
 </body>
 </html>
