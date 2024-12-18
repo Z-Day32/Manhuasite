@@ -14,19 +14,18 @@
         header {
             background-color: #222;
             color: white;
-            padding: 10px;
+            padding: 10px 20px;
             text-align: center;
         }
         nav {
             display: flex;
             justify-content: center;
             gap: 20px;
-            background-color: #444;
-            padding: 10px 0;
+            margin: 10px 0;
         }
         nav a {
             text-decoration: none;
-            color: white;
+            color: #222;
             font-weight: bold;
             cursor: pointer;
         }
@@ -38,35 +37,50 @@
         .manhwa-card {
             border: 1px solid #ddd;
             border-radius: 5px;
+            overflow: hidden;
+            background: white;
             margin: 10px;
             width: calc(25% - 20px);
             display: inline-block;
+            vertical-align: top;
             text-align: center;
-            background: white;
         }
         .manhwa-card img {
             width: 100%;
             height: auto;
         }
         .manhwa-card h3 {
-            margin: 10px 0;
+            font-size: 1.1em;
+            margin: 10px;
         }
         button {
             margin: 10px;
-            padding: 10px 15px;
+            padding: 10px 20px;
             border: none;
             background-color: #222;
             color: white;
             cursor: pointer;
             border-radius: 5px;
         }
-        .section-title {
+        .ad-banner {
             text-align: center;
             margin: 20px 0;
-            font-size: 1.5em;
+            background: #ddd;
+            padding: 10px;
+            border: 1px dashed #aaa;
+        }
+        footer {
+            text-align: center;
+            background-color: #222;
+            color: white;
+            padding: 10px 0;
+            margin-top: 20px;
         }
         .hidden {
             display: none;
+        }
+        h2 {
+            text-align: center;
         }
     </style>
 </head>
@@ -81,32 +95,38 @@
         <a onclick="showSection('contact'); return false;">Contact</a>
     </nav>
 
-    <!-- Sections -->
+    <!-- Home Section -->
     <div id="home" class="container">
-        <h2 class="section-title">Featured Stories</h2>
-        <div id="featured-stories">
-            <p>Loading stories...</p>
-        </div>
+        <div class="ad-banner">Placeholder for Advertisement (728x90)</div>
+        <h2>Featured Manhwa</h2>
+        <div id="featured-stories">Loading stories...</div>
     </div>
 
+    <!-- Genres Section -->
     <div id="genres" class="container hidden">
-        <h2 class="section-title">Browse by Genres</h2>
-        <p>Coming soon...</p>
+        <h2>Genres</h2>
+        <p>Explore stories by genres (Feature under development).</p>
     </div>
 
+    <!-- Latest Section -->
     <div id="latest" class="container hidden">
-        <h2 class="section-title">Latest Updates</h2>
-        <p>Coming soon...</p>
+        <h2>Latest Stories</h2>
+        <p>Discover the latest uploaded stories (Feature under development).</p>
     </div>
 
+    <!-- Contact Section -->
     <div id="contact" class="container hidden">
-        <h2 class="section-title">Contact Us</h2>
-        <p>Email us at: contact@manhwafans.com</p>
+        <h2>Contact Us</h2>
+        <p>Email: support@manhwareader.com</p>
     </div>
+
+    <footer>
+        <p>&copy; 2024 Manhwa Reader | All Rights Reserved</p>
+    </footer>
 
     <!-- Supabase Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+    
     <!-- Custom Script -->
     <script>
         const supabaseUrl = "https://flvhqgtvqqwmtlbozuoh.supabase.co";
@@ -123,7 +143,7 @@
                 console.log("Stories fetched:", data);
 
                 const container = document.getElementById('featured-stories');
-                container.innerHTML = ""; // Clear loading text
+                container.innerHTML = "";
 
                 data.forEach(file => {
                     const storyTitle = file.name.split('/')[0];
@@ -140,7 +160,7 @@
                 });
             } catch (err) {
                 console.error("Error fetching stories:", err.message);
-                alert("Failed to load stories.");
+                document.getElementById('featured-stories').innerHTML = "<p>Failed to load stories. Please try again later.</p>";
             }
         }
 
