@@ -119,32 +119,38 @@
         async function loadStories() {
             try {
                 console.log("Fetching stories...");
-                const { data, error } = await supabaseClient.storage.from('covers').list("", { limit: 10 });
-                if (error) throw error;
+                // Attempt listing objects at the root of the 'covers' bucket
+                const { data, error } = await supabaseClient.storage.from('covers').list('', { limit: 10 });
+                console.log("Data returned:", data);
+                console.log("Error returned:", error);
 
                 const container = document.getElementById('featured-stories');
                 container.innerHTML = "";
+
+                if (error) {
+                    throw error;
+                }
 
                 if (!data || data.length === 0) {
                     container.innerText = "No stories found. Please check your 'covers' bucket.";
                     return;
                 }
 
-                // Fetch only folders that contain a "cover.webp"
-                for (const folder of data) {
-                    const folderName = folder.name;
-                    const coverFile = `${folderName}/cover.webp`;
-                    const coverUrl = `${supabaseUrl}/storage/v1/object/public/covers/${coverFile}`;
+                // Process returned files
+                data.forEach(file => {
+                    const fileName = file.name; // e.g., cover.webp
+                    const coverUrl = `${supabaseUrl}/storage/v1/object/public/covers/${fileName}`;
+                    const storyTitle = fileName.replace(/\.[^/.]+$/, ""); // remove file extension
 
                     const card = document.createElement('div');
                     card.className = "manhwa-card";
                     card.innerHTML = `
-                        <img src="${coverUrl}" alt="${folderName}">
-                        <h3>${folderName}</h3>
-                        <button onclick="readStory('${folderName}')">Read More</button>
+                        <img src="${coverUrl}" alt="${storyTitle}">
+                        <h3>${storyTitle}</h3>
+                        <button onclick="readStory('${storyTitle}')">Read More</button>
                     `;
                     container.appendChild(card);
-                }
+                });
             } catch (err) {
                 console.error("Error loading stories:", err.message);
                 document.getElementById('featured-stories').innerText = "Failed to load stories.";
