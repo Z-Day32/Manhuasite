@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Publish Your Story</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.3"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -50,7 +50,8 @@
     </form>
 
     <script>
-        // Replace with your Supabase project URL and anon key
+        // Initialize Supabase client
+        const { createClient } = supabase;
         const supabaseUrl = "https://flvhqgtvqqwmtlbozuoh.supabase.co";
         const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZsdmhxZ3R2cXF3bXRsYm96dW9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ1MDMxODksImV4cCI6MjA1MDA3OTE4OX0.cB5h8AlqLyymV7HFj0iImdqOYEydscrgZ7FOQQhjmJw";
         const supabase = createClient(supabaseUrl, supabaseAnonKey);
@@ -59,7 +60,7 @@
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
 
-            const title = document.getElementById("title").value;
+            const title = document.getElementById("title").value.trim();
             const coverFile = document.getElementById("cover").files[0];
             const chapterFiles = document.getElementById("chapters").files;
 
@@ -70,24 +71,27 @@
 
             try {
                 // Upload cover image
-                const { data: coverData, error: coverError } = await supabase.storage
+                const coverPath = `${title}/cover.${coverFile.name.split('.').pop()}`;
+                const { error: coverError } = await supabase.storage
                     .from("covers")
-                    .upload(`${title}/cover.${coverFile.name.split('.').pop()}`, coverFile);
+                    .upload(coverPath, coverFile);
 
                 if (coverError) throw coverError;
 
                 // Upload chapter files
                 for (const chapter of chapterFiles) {
+                    const chapterPath = `${title}/${chapter.name}`;
                     const { error: chapterError } = await supabase.storage
                         .from("stories")
-                        .upload(`${title}/${chapter.name}`, chapter);
+                        .upload(chapterPath, chapter);
+
                     if (chapterError) throw chapterError;
                 }
 
                 alert("Story uploaded successfully!");
             } catch (error) {
                 console.error(error);
-                alert("Error uploading story. Please try again.");
+                alert("Error uploading story. Please check your connection and try again.");
             }
         });
     </script>
