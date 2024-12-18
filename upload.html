@@ -58,6 +58,11 @@
         const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZsdmhxZ3R2cXF3bXRsYm96dW9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ1MDMxODksImV4cCI6MjA1MDA3OTE4OX0.cB5h8AlqLyymV7HFj0iImdqOYEydscrgZ7FOQQhjmJw";
         const supabase = createClient(supabaseUrl, supabaseKey);
 
+        // Function to sanitize filenames
+        function sanitizeFilename(filename) {
+            return filename.replace(/[^\w\s.-]/g, '').replace(/\s+/g, '_');
+        }
+
         async function uploadStory() {
             const title = document.getElementById("story-title").value.trim();
             const coverFile = document.getElementById("cover-image").files[0];
@@ -70,25 +75,31 @@
 
             try {
                 console.log("Uploading cover image...");
-                const coverPath = `${title}/cover.${coverFile.name.split('.').pop()}`;
+                const sanitizedTitle = sanitizeFilename(title);
+                const coverPath = `${sanitizedTitle}/cover.${coverFile.name.split('.').pop()}`;
                 const { error: coverError } = await supabase.storage
                     .from("covers")
                     .upload(coverPath, coverFile);
+
                 if (coverError) throw coverError;
+
+                console.log("Cover uploaded successfully.");
 
                 console.log("Uploading chapter files...");
                 for (const chapter of chapterFiles) {
-                    const chapterPath = `${title}/${chapter.name}`;
+                    const sanitizedChapterName = sanitizeFilename(chapter.name);
+                    const chapterPath = `${sanitizedTitle}/${sanitizedChapterName}`;
                     console.log(`Uploading ${chapterPath}...`);
                     const { error: chapterError } = await supabase.storage
                         .from("stories")
                         .upload(chapterPath, chapter);
+
                     if (chapterError) throw chapterError;
                 }
 
                 alert("Story uploaded successfully!");
             } catch (error) {
-                console.error("Error during upload:", error.message);
+                console.error("Error uploading story:", error.message);
                 alert("Error uploading story. Please check the console for details.");
             }
         }
