@@ -50,11 +50,10 @@
     </form>
 
     <script>
-        // Initialize Supabase client
-        const { createClient } = supabase;
+        // Initialize Supabase client BEFORE any usage
         const supabaseUrl = "https://flvhqgtvqqwmtlbozuoh.supabase.co";
         const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZsdmhxZ3R2cXF3bXRsYm96dW9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ1MDMxODksImV4cCI6MjA1MDA3OTE4OX0.cB5h8AlqLyymV7HFj0iImdqOYEydscrgZ7FOQQhjmJw";
-        const supabase = createClient(supabaseUrl, supabaseAnonKey);
+        const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
 
         const form = document.getElementById("upload-form");
         form.addEventListener("submit", async (e) => {
@@ -70,28 +69,31 @@
             }
 
             try {
-                // Upload cover image
+                console.log("Uploading cover image...");
                 const coverPath = `${title}/cover.${coverFile.name.split('.').pop()}`;
-                const { error: coverError } = await supabase.storage
+                const { data: coverData, error: coverError } = await supabase.storage
                     .from("covers")
                     .upload(coverPath, coverFile);
+                console.log("Cover upload result:", coverData, coverError);
 
                 if (coverError) throw coverError;
 
-                // Upload chapter files
+                console.log("Uploading chapter files...");
                 for (const chapter of chapterFiles) {
                     const chapterPath = `${title}/${chapter.name}`;
-                    const { error: chapterError } = await supabase.storage
+                    console.log(`Uploading ${chapterPath}...`);
+                    const { data: chapterData, error: chapterError } = await supabase.storage
                         .from("stories")
                         .upload(chapterPath, chapter);
 
+                    console.log("Chapter upload result:", chapterData, chapterError);
                     if (chapterError) throw chapterError;
                 }
 
                 alert("Story uploaded successfully!");
             } catch (error) {
-                console.error(error);
-                alert("Error uploading story. Please check your connection and try again.");
+                console.error("Error during upload:", error);
+                alert("Error uploading story. Please check the console for details.");
             }
         });
     </script>
