@@ -108,39 +108,36 @@
 
     <!-- Custom Script -->
     <script>
-        // Initialize Supabase
         const supabaseUrl = "https://flvhqgtvqqwmtlbozuoh.supabase.co";
-        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZsdmhxZ3R2cXF3bXRsYm96dW9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ1MDMxODksImV4cCI6MjA1MDA3OTE4OX0.cB5h8AlqLyymV7HFj0iImdqOYEydscrgZ7FOQQhjmJw";
-
+        const supabaseKey = "YOUR_ANON_KEY_HERE"; // Replace with your actual anon key
         const { createClient } = window.supabase;
         const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
-        // Function to Load Stories
+        // Adjust the prefix according to your folder structure
+        // If your file is at covers/lone swordmaster/cover.webp:
+        const prefix = 'lone swordmaster';
+
         async function loadStories() {
             try {
-                console.log("Fetching stories...");
-                // Attempt listing objects at the root of the 'covers' bucket
-                const { data, error } = await supabaseClient.storage.from('covers').list('', { limit: 10 });
+                console.log("Fetching stories from:", prefix);
+                const { data, error } = await supabaseClient.storage.from('covers').list(prefix, { limit: 10 });
                 console.log("Data returned:", data);
                 console.log("Error returned:", error);
 
                 const container = document.getElementById('featured-stories');
                 container.innerHTML = "";
 
-                if (error) {
-                    throw error;
-                }
-
+                if (error) throw error;
                 if (!data || data.length === 0) {
                     container.innerText = "No stories found. Please check your 'covers' bucket.";
                     return;
                 }
 
-                // Process returned files
+                // Assuming each file in `lone swordmaster` folder is a cover image
                 data.forEach(file => {
-                    const fileName = file.name; // e.g., cover.webp
-                    const coverUrl = `${supabaseUrl}/storage/v1/object/public/covers/${fileName}`;
-                    const storyTitle = fileName.replace(/\.[^/.]+$/, ""); // remove file extension
+                    const fileName = file.name; 
+                    const coverUrl = `${supabaseUrl}/storage/v1/object/public/covers/${prefix}/${fileName}`;
+                    const storyTitle = fileName.replace(/\.[^/.]+$/, "");
 
                     const card = document.createElement('div');
                     card.className = "manhwa-card";
@@ -157,12 +154,10 @@
             }
         }
 
-        // Function to Read a Story
         function readStory(title) {
             window.location.href = `story.html?title=${encodeURIComponent(title)}`;
         }
 
-        // Function to Show Sections
         function showSection(sectionId) {
             document.querySelectorAll('.container').forEach(section => {
                 section.classList.add('hidden');
@@ -170,7 +165,6 @@
             document.getElementById(sectionId).classList.remove('hidden');
         }
 
-        // Load Stories on Page Load
         window.onload = loadStories;
     </script>
 </body>
