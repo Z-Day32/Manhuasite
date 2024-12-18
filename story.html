@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Story Reader</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        body, html {
             margin: 0;
             padding: 0;
+            scroll-behavior: smooth; /* Enable smooth scrolling */
             background-color: #f4f4f9;
+            font-family: Arial, sans-serif;
         }
         header {
             background-color: #222;
@@ -84,11 +85,9 @@
                         document.getElementById("chapter-content").innerText = chapters[chapterNumber - 1];
                         currentChapter = chapterNumber;
 
-                        // Scroll to the top of the page
-                        window.scrollTo({
-                            top: 0,
-                            behavior: "smooth"
-                        });
+                        // Force scroll to top for all browsers
+                        document.documentElement.scrollTop = 0; // For modern browsers
+                        document.body.scrollTop = 0;            // For older browsers
                     } else {
                         alert("No more chapters available.");
                     }
