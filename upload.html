@@ -49,11 +49,14 @@
         <button type="submit">Upload Story</button>
     </form>
 
+    <!-- Ensure Supabase is loaded first -->
     <script>
-        // Initialize Supabase client BEFORE any usage
+        // Initialize Supabase BEFORE any usage
         const supabaseUrl = "https://flvhqgtvqqwmtlbozuoh.supabase.co";
         const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZsdmhxZ3R2cXF3bXRsYm96dW9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ1MDMxODksImV4cCI6MjA1MDA3OTE4OX0.cB5h8AlqLyymV7HFj0iImdqOYEydscrgZ7FOQQhjmJw";
-        const supabase = supabase.createClient(supabaseUrl, supabaseAnonKey);
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseAnonKey);
+
+        console.log("Supabase initialized successfully.");
 
         const form = document.getElementById("upload-form");
         form.addEventListener("submit", async (e) => {
@@ -71,29 +74,32 @@
             try {
                 console.log("Uploading cover image...");
                 const coverPath = `${title}/cover.${coverFile.name.split('.').pop()}`;
-                const { data: coverData, error: coverError } = await supabase.storage
+                const { data: coverData, error: coverError } = await supabase
+                    .storage
                     .from("covers")
                     .upload(coverPath, coverFile);
-                console.log("Cover upload result:", coverData, coverError);
 
                 if (coverError) throw coverError;
+
+                console.log("Cover uploaded successfully:", coverData);
 
                 console.log("Uploading chapter files...");
                 for (const chapter of chapterFiles) {
                     const chapterPath = `${title}/${chapter.name}`;
-                    console.log(`Uploading ${chapterPath}...`);
-                    const { data: chapterData, error: chapterError } = await supabase.storage
+                    const { data: chapterData, error: chapterError } = await supabase
+                        .storage
                         .from("stories")
                         .upload(chapterPath, chapter);
 
-                    console.log("Chapter upload result:", chapterData, chapterError);
                     if (chapterError) throw chapterError;
+
+                    console.log(`Chapter uploaded: ${chapterPath}`);
                 }
 
                 alert("Story uploaded successfully!");
             } catch (error) {
-                console.error("Error during upload:", error);
-                alert("Error uploading story. Please check the console for details.");
+                console.error("Error during upload:", error.message);
+                alert("Error uploading story. Check the console for details.");
             }
         });
     </script>
