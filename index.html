@@ -63,22 +63,12 @@
             cursor: pointer;
             border-radius: 5px;
         }
-        .ad-banner {
-            text-align: center;
-            margin: 20px 0;
-            background: #ddd;
-            padding: 10px;
-            border: 1px dashed #aaa;
-        }
         footer {
             text-align: center;
             background-color: #222;
             color: white;
             padding: 10px 0;
             margin-top: 20px;
-        }
-        .hidden {
-            display: none;
         }
     </style>
 </head>
@@ -87,21 +77,15 @@
         <h1>Welcome to Manhwa Reader</h1>
     </header>
     <nav>
-        <a onclick="showSection('home'); return false;">Home</a>
-        <a onclick="showSection('genres'); return false;">Genres</a>
-        <a onclick="showSection('latest'); return false;">Latest</a>
-        <a onclick="showSection('contact'); return false;">Contact</a>
+        <a href="#" onclick="showSection('home'); return false;">Home</a>
+        <a href="#" onclick="showSection('genres'); return false;">Genres</a>
+        <a href="#" onclick="showSection('latest'); return false;">Latest</a>
+        <a href="#" onclick="showSection('contact'); return false;">Contact</a>
     </nav>
 
     <div id="home" class="container">
-        <div class="ad-banner">
-            Placeholder for Advertisement (728x90)
-        </div>
-        <h2 class="section-title">Featured Manhwa</h2>
-        <div id="featured-stories"></div>
-        <div class="ad-banner">
-            Placeholder for Advertisement (300x250)
-        </div>
+        <h2>Featured Stories</h2>
+        <div id="story-container"></div>
     </div>
 
     <footer>
@@ -109,57 +93,51 @@
     </footer>
 
     <script>
-        // Initialize Supabase
-        const SUPABASE_URL = "https://flvhqgtvqqwmtlbozuoh.supabase.co";
-        const SUPABASE_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZsdmhxZ3R2cXF3bXRsYm96dW9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ1MDMxODksImV4cCI6MjA1MDA3OTE4OX0.cB5h8AlqLyymV7HFj0iImdqOYEydscrgZ7FOQQhjmJw";
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_API_KEY);
+        const supabaseUrl = "https://flvhqgtvqqwmtlbozuoh.supabase.co";
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZsdmhxZ3R2cXF3bXRsYm96dW9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ1MDMxODksImV4cCI6MjA1MDA3OTE4OX0.cB5h8AlqLyymV7HFj0iImdqOYEydscrgZ7FOQQhjmJw";
+        const supabase = createClient(supabaseUrl, supabaseKey);
 
-        async function loadStories() {
-            const container = document.getElementById("featured-stories");
+        async function fetchStories() {
+            const container = document.getElementById("story-container");
             container.innerHTML = "Loading stories...";
-            
+
             try {
-                // Fetch files from Supabase covers bucket
-                const { data, error } = await supabase.storage.from("covers").list();
+                // Fetch covers from Supabase storage
+                const { data, error } = await supabase.storage.from("covers").list("", { search: "cover" });
+
                 if (error) throw error;
 
-                container.innerHTML = "";
+                container.innerHTML = ""; // Clear the loading message
+                if (data.length === 0) {
+                    container.innerHTML = "<p>No stories available.</p>";
+                    return;
+                }
 
-                for (const file of data) {
-                    const storyTitle = file.name.replace("/cover.webp", "");
-                    const coverUrl = `${SUPABASE_URL}/storage/v1/object/public/covers/${file.name}`;
-                    
-                    // Add the story card dynamically
+                data.forEach(file => {
+                    const title = file.name.split("/")[0]; // Extract story title from folder name
+                    const coverUrl = `${supabaseUrl}/storage/v1/object/public/covers/${file.name}`;
+
                     const card = document.createElement("div");
                     card.className = "manhwa-card";
                     card.innerHTML = `
-                        <img src="${coverUrl}" alt="${storyTitle}">
-                        <h3>${storyTitle}</h3>
-                        <p>Read the latest chapters now!</p>
-                        <button onclick="readStory('${storyTitle}')">Read More</button>
+                        <img src="${coverUrl}" alt="${title}">
+                        <h3>${title}</h3>
+                        <button onclick="openStory('${title}', '${coverUrl}')">Read More</button>
                     `;
                     container.appendChild(card);
-                }
-            } catch (err) {
-                console.error("Error loading stories:", err);
-                container.innerHTML = "Failed to load stories. Please try again later.";
+                });
+            } catch (error) {
+                console.error("Error fetching stories:", error.message);
+                container.innerHTML = "<p style='color: red;'>Failed to load stories.</p>";
             }
         }
 
-        function readStory(title) {
-            const file = `${title}.txt`;
-            const url = `story.html?title=${encodeURIComponent(title)}&file=${encodeURIComponent(file)}`;
+        function openStory(title, coverUrl) {
+            const url = `story.html?title=${encodeURIComponent(title)}&cover=${encodeURIComponent(coverUrl)}`;
             window.location.href = url;
         }
 
-        function showSection(sectionId) {
-            document.querySelectorAll(".container").forEach(section => {
-                section.style.display = "none";
-            });
-            document.getElementById(sectionId).style.display = "block";
-        }
-
-        window.onload = loadStories;
+        fetchStories();
     </script>
 </body>
 </html>
