@@ -80,9 +80,6 @@
             padding: 10px 0;
             margin-top: 20px;
         }
-        .hidden {
-            display: none;
-        }
     </style>
 </head>
 <body>
@@ -130,40 +127,17 @@
             container.innerHTML = "Loading...";
 
             try {
-                // List all files in the covers bucket
-                // Adjust prefix if your covers are stored under a specific directory
-                const { data, error } = await supabase.storage
-                    .from("covers")
-                    .list("", { limit: 100 });
+                const { data, error } = await supabase.storage.from("covers").list();
 
                 if (error) throw error;
 
-                if (!data || data.length === 0) {
-                    container.innerHTML = "No stories found.";
-                    return;
-                }
-
                 container.innerHTML = "";
                 for (const item of data) {
-                    // If files are structured as `storyName/cover.ext`, split by "/"
-                    const segments = item.name.split("/");
-                    let storyTitle, coverFile;
-                    
-                    if (segments.length > 1) {
-                        // First segment is the story folder (title)
-                        storyTitle = segments[0];
-                        coverFile = segments[1];
-                    } else {
-                        // No folder structure, just file name
-                        // Story title = filename without extension
-                        coverFile = segments[0];
-                        storyTitle = coverFile.split(".")[0];
-                    }
-
-                    const imageUrl = `${supabaseUrl}/storage/v1/object/public/covers/${item.name}`;
-
                     const card = document.createElement("div");
                     card.className = "manhwa-card";
+                    const imageUrl = `${supabaseUrl}/storage/v1/object/public/covers/${item.name}`;
+                    const storyTitle = item.name.split("/")[0];
+
                     card.innerHTML = `
                         <img src="${imageUrl}" alt="${storyTitle}">
                         <h3>${storyTitle}</h3>
