@@ -111,13 +111,15 @@
         // Initialize Supabase
         const supabaseUrl = "https://flvhqgtvqqwmtlbozuoh.supabase.co";
         const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZsdmhxZ3R2cXF3bXRsYm96dW9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ1MDMxODksImV4cCI6MjA1MDA3OTE4OX0.cB5h8AlqLyymV7HFj0iImdqOYEydscrgZ7FOQQhjmJw";
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        
+        // Use the global supabase object provided by the UMD build
+        const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
 
         // Function to Load Stories
         async function loadStories() {
             try {
                 console.log("Fetching stories...");
-                const { data, error } = await supabase.storage.from('covers').list();
+                const { data, error } = await supabaseClient.storage.from('covers').list();
 
                 if (error) throw error;
 
