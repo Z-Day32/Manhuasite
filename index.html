@@ -111,8 +111,7 @@
         // Initialize Supabase
         const supabaseUrl = "https://flvhqgtvqqwmtlbozuoh.supabase.co";
         const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZsdmhxZ3R2cXF3bXRsYm96dW9oIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzQ1MDMxODksImV4cCI6MjA1MDA3OTE4OX0.cB5h8AlqLyymV7HFj0iImdqOYEydscrgZ7FOQQhjmJw";
-        
-        // Destructure createClient from global supabase object
+
         const { createClient } = window.supabase;
         const supabaseClient = createClient(supabaseUrl, supabaseKey);
 
@@ -121,11 +120,22 @@
             try {
                 console.log("Fetching stories...");
                 const { data, error } = await supabaseClient.storage.from('covers').list();
-
-                if (error) throw error;
+                console.log("Data returned:", data);
+                console.log("Error returned:", error);
 
                 const container = document.getElementById('featured-stories');
+
+                if (error) {
+                    throw error;
+                }
+
+                // Clear the container
                 container.innerHTML = "";
+
+                if (!data || data.length === 0) {
+                    container.innerText = "No stories found. Please check your 'covers' bucket.";
+                    return;
+                }
 
                 data.forEach(file => {
                     const storyTitle = file.name.split('/')[0];
